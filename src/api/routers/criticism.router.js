@@ -26,7 +26,7 @@ module.exports = (app) => {
     create
   );
 
-  router.put("/movies/:movie_id/review/", update);
+  router.put("/movies/:movie_id/review/", isCritic, update);
 
   app.use("/api", router);
 };

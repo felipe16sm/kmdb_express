@@ -1,4 +1,4 @@
-const { Movie, Genre, Critcism, Comment } = require("../../models");
+const { Movie, Genre, Critcism, Comment, User } = require("../../models");
 const {
   createRetrieveMovieSerializer,
   listMovieSerializer,
@@ -6,6 +6,41 @@ const {
 
 module.exports.list = async (req, res) => {
   movies = await Movie.find({});
+
+  for (let i = 0; i < movies.length; i++) {
+    const movie = movies[i];
+    const { genres, criticism_set, comment_set } = movie;
+
+    const genre_list = [];
+    const criticism_set_list = [];
+    const comment_set_list = [];
+
+    for (let i = 0; i < genres.length; i++) {
+      let genre = await Genre.findById(genres[i]);
+      genre_list.push(genre);
+    }
+
+    movie.genres = genre_list;
+
+    for (let i = 0; i < criticism_set.length; i++) {
+      let criticism = await Critcism.findById(criticism_set[i]);
+      let user = await User.findById(criticism["user"]["_id"]);
+      criticism.user = user;
+      criticism_set_list.push(criticism);
+    }
+
+    movie.criticism_set = criticism_set_list;
+
+    for (let i = 0; i < comment_set.length; i++) {
+      let comment = await Comment.findById(comment_set[i]);
+      let user = await User.findById(comment["user"]["_id"]);
+      comment.user = user;
+      comment_set_list.push(comment);
+    }
+
+    movie.comment_set = comment_set_list;
+  }
+  console.log(movies);
   res.send(listMovieSerializer(movies));
 };
 
@@ -58,27 +93,3 @@ module.exports.destroy = async (req, res) => {
   }
   return res.status(204).send({});
 };
-
-// module.exports.update = async (req, res) => {
-//   const book = await Book.findOneAndReplace({ _id: req.params.id }, req.body, {
-//     new: true,
-//   });
-
-//   if (!book) {
-//     res.status(404).send({ error: "Not found" });
-//   }
-
-//   res.send(book);
-// };
-
-// module.exports.partialUpdate = async (req, res) => {
-//   const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
-//     new: true,
-//   });
-
-//   if (!book) {
-//     res.status(404).send({ error: "Not found" });
-//   }
-
-//   res.send(book);
-// };

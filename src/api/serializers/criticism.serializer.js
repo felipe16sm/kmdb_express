@@ -4,7 +4,7 @@ const createCriticismSerializer = (criticism) => {
   criticismSerializer["_id"] = criticism["_id"];
   criticismSerializer["stars"] = criticism["stars"];
   criticismSerializer["review"] = criticism["review"];
-  criticismSerializer["spoiler"] = criticism["spoiler"];
+  criticismSerializer["spoilers"] = criticism["spoilers"];
   criticismSerializer["critic"] = {};
   criticismSerializer["critic"]["_id"] = criticism["user"]["_id"];
   criticismSerializer["critic"]["first_name"] = criticism["user"]["first_name"];
@@ -12,10 +12,10 @@ const createCriticismSerializer = (criticism) => {
 
   return {
     _id: criticismSerializer._id,
-    critic: criticismSerializer["critic"],
-    stars: criticismSerializer.title,
+    critic: criticismSerializer.critic,
+    stars: criticismSerializer.stars,
     review: criticismSerializer.review,
-    spoiler: criticismSerializer.spoiler,
+    spoilers: criticismSerializer.spoilers,
   };
 };
 

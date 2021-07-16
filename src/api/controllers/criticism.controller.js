@@ -1,5 +1,4 @@
 const { Movie, Critcism, User } = require("../../models");
-const criticism = require("../../models/criticism");
 const {
   createCriticismSerializer,
 } = require("../serializers/criticism.serializer");
@@ -33,18 +32,18 @@ module.exports.create = async (req, res) => {
 };
 
 module.exports.update = async (req, res) => {
-  const { stars, review, spoiler } = req.body;
+  const { stars, review, spoilers } = req.body;
   try {
     const user = await User.findById(req.user.id);
     const movie = await Movie.findById(req.params.movie_id);
     const findCriticism = await Critcism.find({ movie, user });
     const criticism = findCriticism[0];
-    console.log(criticism);
     criticism.stars = stars;
     criticism.review = review;
-    criticism.spoiler = spoiler;
+    criticism.spoilers = spoilers;
     criticism.user = user;
     criticism.movie = movie;
+    console.log(criticism);
     criticism.save();
 
     return res.send(createCriticismSerializer(criticism));
