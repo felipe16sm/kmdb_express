@@ -40,7 +40,7 @@ module.exports.list = async (req, res) => {
 
     movie.comment_set = comment_set_list;
   }
-  console.log(movies);
+
   res.send(listMovieSerializer(movies));
 };
 
@@ -79,7 +79,38 @@ module.exports.create = async (req, res) => {
 module.exports.retrieve = async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);
-    return res.send(createRetrieveMovieSerializer(movie));
+    const { genres, criticism_set, comment_set } = movie;
+
+    const genre_list = [];
+    const criticism_set_list = [];
+    const comment_set_list = [];
+
+    for (let i = 0; i < genres.length; i++) {
+      let genre = await Genre.findById(genres[i]);
+      genre_list.push(genre);
+    }
+
+    movie.genres = genre_list;
+
+    for (let i = 0; i < criticism_set.length; i++) {
+      let criticism = await Critcism.findById(criticism_set[i]);
+      let user = await User.findById(criticism["user"]["_id"]);
+      criticism.user = user;
+      criticism_set_list.push(criticism);
+    }
+
+    movie.criticism_set = criticism_set_list;
+
+    for (let i = 0; i < comment_set.length; i++) {
+      let comment = await Comment.findById(comment_set[i]);
+      let user = await User.findById(comment["user"]["_id"]);
+      comment.user = user;
+      comment_set_list.push(comment);
+    }
+
+    movie.comment_set = comment_set_list;
+
+    return res.status(200).send(createRetrieveMovieSerializer(movie));
   } catch (exception) {
     return res.status(404).send({ detail: "Not found" });
   }

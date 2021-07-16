@@ -20,8 +20,8 @@ module.exports = (app) => {
 
   app.use("/api/movies", isAuthenticatedOrReadOnly);
 
-  router.post("/movies", movieValidations(), validate, isAdmin, create);
-  router.get("/movies", list);
+  router.post("/movies/", movieValidations(), validate, isAdmin, create);
+  router.get("/movies/", list);
   router.get("/movies/:id", retrieve);
   router.delete("/movies/:id", isAdmin, destroy);
 
